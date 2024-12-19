@@ -1,21 +1,35 @@
+import kotlin.io.path.Path
+import kotlin.io.path.readText
+import kotlin.math.abs
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    val lines = Path("src/Day01.txt").readText().trim().lines()
+    val list1 = mutableListOf<Int>()
+    val list2 = mutableListOf<Int>()
+    lines.forEach {
+        val (left, right) = it.split("   ")
+        list1.add(left.toInt())
+        list2.add(right.toInt())
     }
+    println("part1: ${part1(list1, list2)}")
+    println("part2: ${part2(list1, list2)}")
+}
 
-    fun part2(input: List<String>): Int {
-        return input.size
+fun part1(list1: List<Int>, list2: List<Int>): Int {
+    val list1Sorted = list1.sorted()
+    val list2Sorted = list2.sorted()
+    var sum = 0
+    list1Sorted.forEachIndexed { index, int ->
+        sum += abs(int - list2Sorted[index])
     }
+    return sum
+}
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
-
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+fun part2(list1: List<Int>, list2: List<Int>): Int {
+    val occurrenceMap = list2.groupingBy { it }.eachCount()
+    var sum = 0
+    list1.forEach {
+        sum += it * (occurrenceMap[it] ?: 0)
+    }
+    return sum
 }
